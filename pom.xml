@@ -463,6 +463,25 @@
          </modules>
       </profile>
       <profile>
+         <id>eap</id>
+         <modules>
+            <module>hornetq-commons</module>
+            <module>hornetq-core-client</module>
+            <module>hornetq-server</module>
+            <module>hornetq-jms-client</module>
+            <module>hornetq-jms-server</module>
+            <module>hornetq-journal</module>
+            <module>hornetq-ra</module>
+            <module>hornetq-native</module>
+            <module>integration/hornetq-jboss-as-integration</module>
+            <module>integration/hornetq-spring-integration</module>
+         </modules>
+         <properties>
+            <skipTests>true</skipTests>
+            <maven.test.skip>true</maven.test.skip>
+         </properties>
+      </profile>
+      <profile>
          <id>maven-release</id>
          <modules>
             <module>hornetq-bootstrap</module>
