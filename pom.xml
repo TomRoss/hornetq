@@ -757,10 +757,28 @@
                <artifactId>hornetq-maven-plugin</artifactId>
                <version>1.2.0</version>
             </plugin>
+
+            <plugin>
+               <groupId>org.jboss.jandex</groupId>
+               <artifactId>jandex-maven-plugin</artifactId>
+               <version>1.0-redhat-1</version>
+               <executions>
+                  <execution>
+                     <id>make-index</id>
+                     <goals>
+                        <goal>jandex</goal>
+                     </goals>
+                  </execution>
+               </executions>
+            </plugin>
          </plugins>
       </pluginManagement>
 
       <plugins>
+         <plugin>
+            <groupId>org.jboss.jandex</groupId>
+            <artifactId>jandex-maven-plugin</artifactId>
+         </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
