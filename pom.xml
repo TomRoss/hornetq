@@ -6,6 +6,12 @@
    <packaging>pom</packaging>
    <version>2.3.25.SP31.Final</version>
 
+   <parent>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-parent</artifactId>
+      <version>14.0.0.redhat-1</version>
+   </parent>
+
    <name>HornetQ Parent</name>
    <url>http://hornetq.org</url>
    <description>
