@@ -232,6 +232,7 @@ public class DisconnectOnCriticalFailureTest extends JMSTestBase
       }
    }
 
+
    public static void doThrow(HornetQBuffer buff)
    {
       byte type = buff.getByte(buff.readerIndex());
