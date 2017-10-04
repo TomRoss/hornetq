@@ -149,5 +149,4 @@ public abstract class ManagementTestBase extends ServiceTestBase
    // Private -------------------------------------------------------
 
    // Inner classes -------------------------------------------------
-
 }

@@ -149,7 +149,8 @@ public class QueueImpl implements Queue
 
    private final ScheduledDeliveryHandler scheduledDeliveryHandler;
 
-   private volatile long messagesAdded;
+   //private volatile long messagesAdded;
+   private AtomicLong messagesAdded = new AtomicLong(0);
 
    protected final AtomicInteger deliveringCount = new AtomicInteger(0);
 
@@ -214,7 +215,8 @@ public class QueueImpl implements Queue
 
    private SlowConsumerReaperRunnable slowConsumerReaperRunnable;
 
-   private long messagesAcknowledged;
+   //private long messagesAcknowledged;
+   private AtomicLong messagesAcknowledged = new AtomicLong(0);
 
    /**
     * This is to avoid multi-thread races on calculating direct delivery,
@@ -513,7 +515,7 @@ public class QueueImpl implements Queue
 
       if (!ref.isPaged())
       {
-         messagesAdded++;
+         messagesAdded.incrementAndGet();
       }
    }
 
@@ -530,7 +532,7 @@ public class QueueImpl implements Queue
          {
             if (!ref.isPaged())
             {
-               messagesAdded++;
+               messagesAdded.incrementAndGet();
             }
          }
 
@@ -1217,17 +1219,17 @@ public class QueueImpl implements Queue
    {
       if (pageSubscription != null)
       {
-         return messagesAdded + pageSubscription.getCounter().getValueAdded();
+         return messagesAdded.get() + pageSubscription.getCounter().getValueAdded();
       }
       else
       {
-         return messagesAdded;
+         return messagesAdded.get();
       }
    }
 
    public long getMessagesAcknowledged()
    {
-      return messagesAcknowledged;
+      return messagesAcknowledged.get();
    }
 
    public int deleteAllReferences() throws Exception
@@ -1814,7 +1816,7 @@ public class QueueImpl implements Queue
 
    public synchronized void resetMessagesAdded()
    {
-      messagesAdded = 0;
+      messagesAdded.set(0);
    }
 
    public synchronized void pause()
@@ -1940,7 +1942,7 @@ public class QueueImpl implements Queue
 
          if (!ref.isPaged())
          {
-            messagesAdded++;
+            messagesAdded.incrementAndGet();
          }
          if (added++ > MAX_DELIVERIES_IN_LOOP)
          {
@@ -2570,7 +2572,7 @@ public class QueueImpl implements Queue
                   groups.put(groupID, consumer);
                }
 
-               messagesAdded++;
+               messagesAdded.incrementAndGet();
 
                deliveriesInTransit.countUp();
                proceedDeliver(consumer, ref);
