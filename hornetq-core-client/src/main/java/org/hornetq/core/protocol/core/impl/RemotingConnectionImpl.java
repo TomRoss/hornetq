@@ -531,9 +531,12 @@ public class RemotingConnectionImpl implements CoreRemotingConnection
 
    public void bufferReceived(final Object connectionID, final HornetQBuffer buffer)
    {
+      HornetQClientLogger.LOGGER.debug("data received from connection: " + connectionID);
+      ChannelImpl.dumpBuffer(buffer);
       try
       {
          final Packet packet = packetDecoder.decode(buffer);
+         HornetQClientLogger.LOGGER.debug("successfully decoded a packet: " + packet);
 
          if (isTrace)
          {
