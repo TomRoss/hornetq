@@ -218,6 +218,8 @@ public final class ChannelImpl implements Channel
    // This must never called by more than one thread concurrently
    public boolean send(final Packet packet, final boolean flush, final boolean batch)
    {
+      HornetQClientLogger.LOGGER.debug("packet: " + packet + " being sent over channel  " + id);
+
       if (invokeInterceptors(packet, interceptors, connection) != null)
       {
          return false;
@@ -272,13 +274,52 @@ public final class ChannelImpl implements Channel
             HornetQClientLogger.LOGGER.trace("Writing buffer for channelID=" + id);
          }
 
-
+         HornetQClientLogger.LOGGER.debug("writing buffer to connection " + connection);
+         dumpBuffer(buffer);
          // The actual send must be outside the lock, or with OIO transport, the write can block if the tcp
          // buffer is full, preventing any incoming buffers being handled and blocking failover
          connection.getTransportConnection().write(buffer, flush, batch);
 
          return true;
       }
+   }
+
+   public static synchronized void dumpBuffer(final HornetQBuffer buffer)
+   {
+      StringBuilder builder = new StringBuilder("--begin dumping bytes from " + buffer.getClass().getName() + "\n");
+      builder.append("original indices: " + buffer.readerIndex() + " " + buffer.writerIndex() + " " + buffer.readableBytes() + "\n");
+      HornetQBuffer duplicate = buffer.duplicate();
+      int rIndex = duplicate.readerIndex();
+      int wIndex = duplicate.writerIndex();
+      int readable = duplicate.readableBytes();
+      builder.append("readerIndex: " + rIndex + ", writerIndex: " + wIndex + ", readable: " + readable + "\n");
+      byte[] content = new byte[readable];
+      duplicate.readBytes(content);
+      final int lineNum = 32;
+      builder.append("<length: " + content.length + ">");
+      if (content.length > 0)
+      {
+         builder.append("\n[");
+         int n = 0;
+         for (int i = 0; i < content.length; i++)
+         {
+            if (n == lineNum)
+            {
+               builder.append("]\n[");
+               n = 0;
+            }
+            byte b = content[i];
+            builder.append(String.format("%02X ", b));
+            n++;
+         }
+         if (n > 0)
+         {
+            builder.append("]\n");
+         }
+      }
+
+      builder.append("--end--\n");
+      HornetQClientLogger.LOGGER.debug(builder.toString());
    }
 
    /**
