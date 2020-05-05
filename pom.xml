@@ -1,10 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.hornetq</groupId>
    <artifactId>hornetq-pom</artifactId>
    <packaging>pom</packaging>
-   <version>2.3.25.SP31</version>
+   <version>2.3.25.SP31-redhat-00001</version>
 
    <parent>
       <groupId>org.jboss</groupId>
@@ -14,9 +14,7 @@
 
    <name>HornetQ Parent</name>
    <url>http://hornetq.org</url>
-   <description>
-      Putting the buzz in messaging
-   </description>
+   <description>Putting the buzz in messaging</description>
 
    <organization>
       <name>JBoss, a division of Red Hat</name>
@@ -47,10 +45,8 @@
       <hornetq.version.minorVersion>3</hornetq.version.minorVersion>
       <hornetq.version.microVersion>25</hornetq.version.microVersion>
       <hornetq.version.incrementingVersion>123,122</hornetq.version.incrementingVersion>
-      <HornetQ-Version>
-         ${hornetq.version.majorVersion}.${hornetq.version.minorVersion}.${hornetq.version.microVersion}.${hornetq.version.versionSuffix}
-         (${hornetq.version.versionName}, ${hornetq.version.incrementingVersion})
-      </HornetQ-Version>
+      <HornetQ-Version>${hornetq.version.majorVersion}.${hornetq.version.minorVersion}.${hornetq.version.microVersion}.${hornetq.version.versionSuffix}
+         (${hornetq.version.versionName}, ${hornetq.version.incrementingVersion})</HornetQ-Version>
       <resteasy.version>2.3.4.Final</resteasy.version>
       <skipUnitTests>true</skipUnitTests>
       <skipJmsTests>true</skipJmsTests>
@@ -69,8 +65,7 @@
       <hornetq-surefire-argline>-Djava.util.logging.manager=org.jboss.logmanager.LogManager
          -Dlogging.configuration=file:${hornetq.basedir}/tests/config/logging.properties
          -Djava.library.path=${hornetq.basedir}/hornetq-native/bin/ -Djgroups.bind_addr=localhost
-         -Djava.net.preferIPv4Stack=true
-      </hornetq-surefire-argline>
+         -Djava.net.preferIPv4Stack=true</hornetq-surefire-argline>
       <hornetq.basedir>${project.basedir}</hornetq.basedir>
       <skipStyleCheck>false</skipStyleCheck>
    </properties>
@@ -406,37 +401,6 @@
       </dependencies>
    </dependencyManagement>
 
-   <repositories>
-      <repository>
-         <snapshots>
-            <enabled>false</enabled>
-            <updatePolicy>never</updatePolicy>
-         </snapshots>
-         <releases>
-            <enabled>true</enabled>
-            <updatePolicy>interval:10080</updatePolicy>
-         </releases>
-         <id>jboss.release</id>
-         <name>JBoss releases</name>
-         <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      </repository>
-   </repositories>
-   <pluginRepositories>
-      <pluginRepository>
-         <snapshots>
-            <enabled>false</enabled>
-            <updatePolicy>never</updatePolicy>
-         </snapshots>
-         <releases>
-            <enabled>true</enabled>
-            <updatePolicy>interval:10080</updatePolicy>
-         </releases>
-         <id>jboss.release</id>
-         <name>JBoss releases</name>
-         <url>https://repository.jboss.org/nexus/content/groups/public</url>
-      </pluginRepository>
-   </pluginRepositories>
-
 
    <profiles>
       <profile>
@@ -737,7 +701,6 @@
             <plugin>
                <groupId>org.codehaus.mojo</groupId>
                <artifactId>cobertura-maven-plugin</artifactId>
-               <configuration/>
                <executions>
                   <execution>
                      <goals>
@@ -828,57 +791,62 @@
                <failOnError>false</failOnError>
             </configuration>
          </plugin>
+
+         <plugin>
+        <groupId>org.commonjava.maven.plugins</groupId>
+        <artifactId>project-sources-maven-plugin</artifactId>
+        <version>0.3</version>
+        <executions>
+          <execution>
+            <id>project-sources-archive</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>archive</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+         <plugin>
+        <groupId>com.redhat.rcm.maven.plugin</groupId>
+        <artifactId>buildmetadata-maven-plugin</artifactId>
+        <version>1.7.0</version>
+        <executions>
+          <execution>
+            <id>build-metadata</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>provide-buildmetadata</goal>
+            </goals>
+            <configuration>
+              <addToLocations>
+                <addToLocation>${session.executionRootDirectory}</addToLocation>
+              </addToLocations>
+              <addOsInfo>false</addOsInfo>
+              <validateCheckout>false</validateCheckout>
+              <addHostInfo>false</addHostInfo>
+              <hideJavaOptsInfo>false</hideJavaOptsInfo>
+              <activateOutputFileMapping>false</activateOutputFileMapping>
+              <createXmlReport>false</createXmlReport>
+              <hideCommandLineInfo>false</hideCommandLineInfo>
+              <propertiesOutputFile>${project.build.outputDirectory}/META-INF/build.metadata</propertiesOutputFile>
+              <addToFilters>false</addToFilters>
+              <createPropertiesReport>true</createPropertiesReport>
+              <addMavenExecutionInfo>false</addMavenExecutionInfo>
+              <addLocallyModifiedTagToFullVersion>false</addLocallyModifiedTagToFullVersion>
+              <addBuildDateInfo>false</addBuildDateInfo>
+              <addBuildDateToFullVersion>false</addBuildDateToFullVersion>
+              <addJavaRuntimeInfo>true</addJavaRuntimeInfo>
+              <addToGeneratedSources>false</addToGeneratedSources>
+              <forceNewProperties>true</forceNewProperties>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       </plugins>
    </build>
-
-   <reporting>
-      <plugins>
-         <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>cobertura-maven-plugin</artifactId>
-            <version>2.5.2</version>
-            <configuration>
-               <check/>
-               <formats>
-                  <format>html</format>
-                  <format>xml</format>
-               </formats>
-            </configuration>
-         </plugin>
-         <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>findbugs-maven-plugin</artifactId>
-            <version>2.5.2</version>
-            <configuration>
-               <excludeFilterFile>${user.dir}/etc/findbugs-exclude.xml</excludeFilterFile>
-               <effort>Max</effort>
-               <failOnError>false</failOnError>
-            </configuration>
-         </plugin>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.9</version>
-            <configuration>
-               <minmemory>128m</minmemory>
-               <maxmemory>1024m</maxmemory>
-               <quiet>false</quiet>
-               <!-- XXX FIXME 'aggregate' is deprecated -->
-               <aggregate>true</aggregate>
-               <excludePackageNames>com.restfully.*:org.jboss.resteasy.examples.*:org.jboss.resteasy.tests.*
-               </excludePackageNames>
-            </configuration>
-         </plugin>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-project-info-reports-plugin</artifactId>
-            <version>2.7</version>
-         </plugin>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-report-plugin</artifactId>
-            <version>2.13</version>
-         </plugin>
-      </plugins>
-   </reporting>
 </project>
+<!--
+Modified by POM Manipulation Extension for Maven 1.17 ( SHA: 89482a03 ) 
+-->
+
