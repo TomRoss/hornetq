@@ -50,6 +50,13 @@
          <version>${project.version}</version>
       </dependency>
       <dependency>
+         <groupId>org.hornetq</groupId>
+         <artifactId>hornetq-core-client</artifactId>
+         <type>test-jar</type>
+         <version>${project.version}</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
          <groupId>io.netty</groupId>
          <artifactId>netty</artifactId>
       </dependency>
